@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { reworkTrends, topIssues } from '@/data/mockData';
 import { AlertCircle, User, FileType, Building } from 'lucide-react';
 import { Tooltip as UITooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { IssuesDetailSheet } from './IssuesDetailSheet';
 
 const RepeatIndicatorIcon: React.FC<{ type?: 'vendor' | 'type' | 'user' }> = ({ type }) => {
   if (!type) return null;
@@ -34,11 +35,16 @@ const RepeatIndicatorIcon: React.FC<{ type?: 'vendor' | 'type' | 'user' }> = ({ 
 };
 
 export const QualityRework: React.FC = () => {
+  const [issuesOpen, setIssuesOpen] = useState(false);
+
   return (
     <div className="mb-6">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-semibold">Quality & Rework Intelligence</h2>
-        <button className="text-sm text-primary hover:underline font-medium">
+        <button 
+          onClick={() => setIssuesOpen(true)}
+          className="text-sm text-primary hover:underline font-medium"
+        >
           View All Issues →
         </button>
       </div>
@@ -89,7 +95,10 @@ export const QualityRework: React.FC = () => {
             {topIssues.map((issue, index) => (
               <UITooltip key={index}>
                 <TooltipTrigger asChild>
-                  <div className="flex items-center justify-between p-3 bg-muted/50 rounded-md hover:bg-muted transition-colors cursor-pointer">
+                  <div 
+                    className="flex items-center justify-between p-3 bg-muted/50 rounded-md hover:bg-muted transition-colors cursor-pointer"
+                    onClick={() => setIssuesOpen(true)}
+                  >
                     <div className="flex items-center gap-3">
                       <span className="w-6 h-6 rounded-full bg-critical/10 text-critical flex items-center justify-center text-xs font-semibold">
                         {index + 1}
@@ -118,6 +127,8 @@ export const QualityRework: React.FC = () => {
           </div>
         </div>
       </div>
+
+      <IssuesDetailSheet open={issuesOpen} onOpenChange={setIssuesOpen} />
     </div>
   );
 };

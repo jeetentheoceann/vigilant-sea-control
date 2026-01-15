@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
 import { useRole } from '@/contexts/RoleContext';
 import { kpiCards } from '@/data/mockData';
 import { KPICard } from '@/types/dashboard';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { MetricsDetailSheet } from './MetricsDetailSheet';
 
 const KPICardComponent: React.FC<{ kpi: KPICard }> = ({ kpi }) => {
   const statusClasses = {
@@ -58,6 +59,7 @@ const KPICardComponent: React.FC<{ kpi: KPICard }> = ({ kpi }) => {
 
 export const KPIStrip: React.FC = () => {
   const { currentRole } = useRole();
+  const [metricsOpen, setMetricsOpen] = useState(false);
 
   // Filter KPIs based on current role
   const visibleKPIs = kpiCards.filter(kpi => kpi.visibleTo.includes(currentRole));
@@ -82,7 +84,10 @@ export const KPIStrip: React.FC = () => {
     <div className="mb-6">
       <div className="flex items-center justify-between mb-3">
         <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Key Metrics</h2>
-        <button className="text-sm text-primary hover:underline font-medium">
+        <button 
+          onClick={() => setMetricsOpen(true)}
+          className="text-sm text-primary hover:underline font-medium"
+        >
           View All Metrics →
         </button>
       </div>
@@ -91,6 +96,8 @@ export const KPIStrip: React.FC = () => {
           <KPICardComponent key={kpi.id} kpi={kpi} />
         ))}
       </div>
+      
+      <MetricsDetailSheet open={metricsOpen} onOpenChange={setMetricsOpen} />
     </div>
   );
 };

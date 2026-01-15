@@ -1,20 +1,31 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { agentData } from '@/data/mockData';
 import { FileText, Clock, CheckCircle, AlertCircle } from 'lucide-react';
+import { InvoiceListSheet } from './InvoiceListSheet';
+import { IssuesDetailSheet } from './IssuesDetailSheet';
 
 export const AgentView: React.FC = () => {
+  const [invoiceSheetOpen, setInvoiceSheetOpen] = useState(false);
+  const [issuesSheetOpen, setIssuesSheetOpen] = useState(false);
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-semibold">My Invoice Summary</h2>
-        <button className="text-sm text-primary hover:underline font-medium">
+        <button 
+          onClick={() => setInvoiceSheetOpen(true)}
+          className="text-sm text-primary hover:underline font-medium"
+        >
           View All My Invoices →
         </button>
       </div>
 
       {/* Agent KPIs */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="dashboard-card p-4">
+        <div 
+          className="dashboard-card p-4 cursor-pointer hover:bg-muted/50 transition-colors"
+          onClick={() => setInvoiceSheetOpen(true)}
+        >
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-md bg-primary/10 flex items-center justify-center text-primary">
               <FileText className="w-5 h-5" />
@@ -64,13 +75,20 @@ export const AgentView: React.FC = () => {
             <AlertCircle className="w-4 h-4 text-critical" />
             <h3 className="text-sm font-semibold">Recent Rejection Reasons</h3>
           </div>
-          <button className="text-sm text-primary hover:underline font-medium">
+          <button 
+            onClick={() => setIssuesSheetOpen(true)}
+            className="text-sm text-primary hover:underline font-medium"
+          >
             View Details →
           </button>
         </div>
         <div className="p-4 space-y-3">
           {agentData.rejectionReasons.map((reason, index) => (
-            <div key={index} className="flex items-center justify-between p-3 bg-muted/50 rounded-md">
+            <div 
+              key={index} 
+              className="flex items-center justify-between p-3 bg-muted/50 rounded-md cursor-pointer hover:bg-muted transition-colors"
+              onClick={() => setIssuesSheetOpen(true)}
+            >
               <div className="flex items-center gap-3">
                 <span className="w-6 h-6 rounded-full bg-critical/10 text-critical flex items-center justify-center text-xs font-semibold">
                   {index + 1}
@@ -94,6 +112,16 @@ export const AgentView: React.FC = () => {
           You are viewing your own invoice data only. Department and financial metrics are not available for your role.
         </p>
       </div>
+
+      <InvoiceListSheet 
+        open={invoiceSheetOpen} 
+        onOpenChange={setInvoiceSheetOpen}
+        title="My Invoices"
+      />
+      <IssuesDetailSheet 
+        open={issuesSheetOpen} 
+        onOpenChange={setIssuesSheetOpen}
+      />
     </div>
   );
 };
