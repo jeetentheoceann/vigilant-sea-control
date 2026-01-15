@@ -16,9 +16,14 @@ export const AuditCompliance: React.FC = () => {
 
   return (
     <div className="mb-6">
-      <div className="flex items-center gap-2 mb-4">
-        <Shield className="w-5 h-5 text-primary" />
-        <h2 className="text-lg font-semibold">Audit & Compliance</h2>
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
+          <Shield className="w-5 h-5 text-primary" />
+          <h2 className="text-lg font-semibold">Audit & Compliance</h2>
+        </div>
+        <button className="text-sm text-primary hover:underline font-medium">
+          View Full Audit Log →
+        </button>
       </div>
 
       <div className="dashboard-card">
