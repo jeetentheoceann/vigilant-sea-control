@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { auditFlags } from '@/data/mockData';
 import { AlertTriangle, Flag, ChevronRight, Shield, UserX, Calendar, Settings, MapPin } from 'lucide-react';
+import { AuditDetailSheet } from './AuditDetailSheet';
 
 const flagIcons: Record<string, React.ReactNode> = {
   'sod-breach': <UserX className="w-5 h-5" />,
@@ -11,8 +12,16 @@ const flagIcons: Record<string, React.ReactNode> = {
 };
 
 export const AuditCompliance: React.FC = () => {
+  const [auditSheetOpen, setAuditSheetOpen] = useState(false);
+  const [selectedAuditType, setSelectedAuditType] = useState<string | undefined>(undefined);
+  
   const criticalFlags = auditFlags.filter(f => f.severity === 'critical');
   const warningFlags = auditFlags.filter(f => f.severity === 'warning');
+
+  const openAuditDetails = (type?: string) => {
+    setSelectedAuditType(type);
+    setAuditSheetOpen(true);
+  };
 
   return (
     <div className="mb-6">
@@ -21,7 +30,10 @@ export const AuditCompliance: React.FC = () => {
           <Shield className="w-5 h-5 text-primary" />
           <h2 className="text-lg font-semibold">Audit & Compliance</h2>
         </div>
-        <button className="text-sm text-primary hover:underline font-medium">
+        <button 
+          onClick={() => openAuditDetails(undefined)}
+          className="text-sm text-primary hover:underline font-medium"
+        >
           View Full Audit Log →
         </button>
       </div>
@@ -48,7 +60,10 @@ export const AuditCompliance: React.FC = () => {
                 <span className="w-8 h-8 rounded-full bg-critical text-critical-foreground flex items-center justify-center text-sm font-bold">
                   {flag.count}
                 </span>
-                <button className="text-sm text-primary hover:underline flex items-center gap-1">
+                <button 
+                  onClick={() => openAuditDetails(flag.type)}
+                  className="text-sm text-primary hover:underline flex items-center gap-1"
+                >
                   View Details <ChevronRight className="w-4 h-4" />
                 </button>
               </div>
@@ -78,7 +93,10 @@ export const AuditCompliance: React.FC = () => {
                   <span className="w-8 h-8 rounded-full bg-warning/20 text-warning flex items-center justify-center text-sm font-bold">
                     {flag.count}
                   </span>
-                  <button className="text-sm text-primary hover:underline flex items-center gap-1">
+                  <button 
+                    onClick={() => openAuditDetails(flag.type)}
+                    className="text-sm text-primary hover:underline flex items-center gap-1"
+                  >
                     View Details <ChevronRight className="w-4 h-4" />
                   </button>
                 </div>
@@ -87,6 +105,12 @@ export const AuditCompliance: React.FC = () => {
           </div>
         </div>
       </div>
+
+      <AuditDetailSheet 
+        open={auditSheetOpen} 
+        onOpenChange={setAuditSheetOpen}
+        auditType={selectedAuditType}
+      />
     </div>
   );
 };

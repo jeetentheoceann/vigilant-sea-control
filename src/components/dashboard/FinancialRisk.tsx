@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { riskSummary, highValueInvoices } from '@/data/mockData';
 import { AlertTriangle, DollarSign, Clock, FileWarning, Scale } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { InvoiceListSheet } from './InvoiceListSheet';
 
 const formatCurrency = (value: number): string => {
   if (value >= 100000) {
@@ -11,11 +12,12 @@ const formatCurrency = (value: number): string => {
   return `₹${(value / 1000).toFixed(0)}K`;
 };
 
-const RiskCard: React.FC<{ icon: React.ReactNode; label: string; value: number; variant?: 'default' | 'warning' | 'critical' }> = ({
+const RiskCard: React.FC<{ icon: React.ReactNode; label: string; value: number; variant?: 'default' | 'warning' | 'critical'; onClick?: () => void }> = ({
   icon,
   label,
   value,
   variant = 'default',
+  onClick,
 }) => {
   const variantClasses = {
     default: 'border-border',
@@ -24,7 +26,10 @@ const RiskCard: React.FC<{ icon: React.ReactNode; label: string; value: number; 
   };
 
   return (
-    <div className={`dashboard-card p-4 border ${variantClasses[variant]}`}>
+    <div 
+      className={`dashboard-card p-4 border ${variantClasses[variant]} cursor-pointer hover:bg-muted/50 transition-colors`}
+      onClick={onClick}
+    >
       <div className="flex items-center gap-3">
         <div className={`w-10 h-10 rounded-md flex items-center justify-center ${
           variant === 'critical' ? 'bg-critical/20 text-critical' :
@@ -58,11 +63,22 @@ const RiskFlagBadge: React.FC<{ flag: 'low' | 'medium' | 'high' | 'critical' }> 
 };
 
 export const FinancialRisk: React.FC = () => {
+  const [invoiceSheetOpen, setInvoiceSheetOpen] = useState(false);
+  const [sheetTitle, setSheetTitle] = useState('All Risk Invoices');
+
+  const openSheet = (title: string) => {
+    setSheetTitle(title);
+    setInvoiceSheetOpen(true);
+  };
+
   return (
     <div className="mb-6">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-semibold">Financial Risk & Exposure</h2>
-        <button className="text-sm text-primary hover:underline font-medium">
+        <button 
+          onClick={() => openSheet('All Financial Risk Invoices')}
+          className="text-sm text-primary hover:underline font-medium"
+        >
           View All Risks →
         </button>
       </div>
@@ -73,23 +89,27 @@ export const FinancialRisk: React.FC = () => {
           icon={<DollarSign className="w-5 h-5" />}
           label="Total Exposure"
           value={riskSummary.totalExposure}
+          onClick={() => openSheet('Total Exposure Invoices')}
         />
         <RiskCard
           icon={<Clock className="w-5 h-5" />}
           label="Under Approval"
           value={riskSummary.underApproval}
           variant="warning"
+          onClick={() => openSheet('Under Approval Invoices')}
         />
         <RiskCard
           icon={<FileWarning className="w-5 h-5" />}
           label="Approved but Unpaid"
           value={riskSummary.approvedUnpaid}
+          onClick={() => openSheet('Approved but Unpaid Invoices')}
         />
         <RiskCard
           icon={<Scale className="w-5 h-5" />}
           label="Under Dispute"
           value={riskSummary.underDispute}
           variant="critical"
+          onClick={() => openSheet('Disputed Invoices')}
         />
       </div>
 
@@ -102,7 +122,10 @@ export const FinancialRisk: React.FC = () => {
           </div>
           <div className="flex items-center gap-4">
             <span className="text-xs text-muted-foreground">Top 5 by exposure</span>
-            <button className="text-sm text-primary hover:underline font-medium">
+            <button 
+              onClick={() => openSheet('High-Value Watchlist - All Invoices')}
+              className="text-sm text-primary hover:underline font-medium"
+            >
               View All Invoices →
             </button>
           </div>
@@ -124,7 +147,10 @@ export const FinancialRisk: React.FC = () => {
               {highValueInvoices.map(invoice => (
                 <Tooltip key={invoice.id}>
                   <TooltipTrigger asChild>
-                    <tr className="cursor-pointer">
+                    <tr 
+                      className="cursor-pointer"
+                      onClick={() => openSheet(`Invoice ${invoice.invoiceNo} Details`)}
+                    >
                       <td className="font-mono text-sm">{invoice.invoiceNo}</td>
                       <td>{invoice.vendor}</td>
                       <td className="font-semibold">{formatCurrency(invoice.amount)}</td>
@@ -153,6 +179,12 @@ export const FinancialRisk: React.FC = () => {
           </table>
         </div>
       </div>
+
+      <InvoiceListSheet 
+        open={invoiceSheetOpen} 
+        onOpenChange={setInvoiceSheetOpen}
+        title={sheetTitle}
+      />
     </div>
   );
 };

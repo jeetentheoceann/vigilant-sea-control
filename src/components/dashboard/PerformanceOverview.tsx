@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Legend } from 'recharts';
 import { useRole } from '@/contexts/RoleContext';
 import { trendData, departmentComparison } from '@/data/mockData';
 import { FileCheck, Clock, RefreshCw } from 'lucide-react';
+import { ReportsSheet } from './ReportsSheet';
 
 const MetricCard: React.FC<{ icon: React.ReactNode; label: string; value: string; subtext?: string }> = ({
   icon,
@@ -26,13 +27,17 @@ const MetricCard: React.FC<{ icon: React.ReactNode; label: string; value: string
 
 export const PerformanceOverview: React.FC = () => {
   const { currentRole } = useRole();
+  const [reportsOpen, setReportsOpen] = useState(false);
   const showDepartmentComparison = ['director', 'gm'].includes(currentRole);
 
   return (
     <div className="mb-6">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-semibold">Performance Overview</h2>
-        <button className="text-sm text-primary hover:underline font-medium">
+        <button 
+          onClick={() => setReportsOpen(true)}
+          className="text-sm text-primary hover:underline font-medium"
+        >
           View All Reports →
         </button>
       </div>
@@ -125,6 +130,8 @@ export const PerformanceOverview: React.FC = () => {
           </div>
         </div>
       </div>
+      
+      <ReportsSheet open={reportsOpen} onOpenChange={setReportsOpen} />
     </div>
   );
 };

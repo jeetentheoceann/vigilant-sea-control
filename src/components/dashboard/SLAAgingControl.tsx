@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { agingBuckets } from '@/data/mockData';
 import { useRole } from '@/contexts/RoleContext';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { InvoiceListSheet } from './InvoiceListSheet';
 
 const formatCurrency = (value: number): string => {
   if (value >= 100000) {
@@ -12,6 +13,8 @@ const formatCurrency = (value: number): string => {
 
 export const SLAAgingControl: React.FC = () => {
   const { currentRole } = useRole();
+  const [invoiceSheetOpen, setInvoiceSheetOpen] = useState(false);
+  const [selectedBucket, setSelectedBucket] = useState<string | null>(null);
   const showValueWeighted = ['director', 'gm'].includes(currentRole);
 
   // Sort by value for leadership roles
@@ -33,6 +36,11 @@ export const SLAAgingControl: React.FC = () => {
     severe: 'text-severe',
   };
 
+  const handleBucketClick = (bucketId: string) => {
+    setSelectedBucket(bucketId);
+    setInvoiceSheetOpen(true);
+  };
+
   return (
     <div className="mb-6">
       <div className="flex items-center justify-between mb-4">
@@ -47,7 +55,10 @@ export const SLAAgingControl: React.FC = () => {
           {sortedBuckets.map(bucket => (
             <Tooltip key={bucket.id}>
               <TooltipTrigger asChild>
-                <div className={`aging-tile ${tileClasses[bucket.status]}`}>
+                <div 
+                  className={`aging-tile ${tileClasses[bucket.status]} cursor-pointer`}
+                  onClick={() => handleBucketClick(bucket.id)}
+                >
                   <span className="text-xs font-medium text-muted-foreground mb-1">{bucket.label}</span>
                   <span className={`kpi-value-large ${statusColors[bucket.status]}`}>{bucket.count}</span>
                   <span className="text-sm font-semibold mt-1">{formatCurrency(bucket.value)}</span>
@@ -73,12 +84,22 @@ export const SLAAgingControl: React.FC = () => {
                 Total Value: <span className="font-semibold text-foreground">{formatCurrency(agingBuckets.reduce((sum, b) => sum + b.value, 0))}</span>
               </span>
             </div>
-            <button className="text-primary hover:underline text-sm font-medium">
+            <button 
+              onClick={() => { setSelectedBucket(null); setInvoiceSheetOpen(true); }}
+              className="text-primary hover:underline text-sm font-medium"
+            >
               View All Invoices →
             </button>
           </div>
         </div>
       </div>
+
+      <InvoiceListSheet 
+        open={invoiceSheetOpen} 
+        onOpenChange={setInvoiceSheetOpen}
+        title={selectedBucket ? `Invoices: ${selectedBucket} Days Aging` : 'All Pending Invoices'}
+        filter="aging"
+      />
     </div>
   );
 };
