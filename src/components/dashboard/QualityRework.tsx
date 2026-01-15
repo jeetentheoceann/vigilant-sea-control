@@ -36,7 +36,12 @@ const RepeatIndicatorIcon: React.FC<{ type?: 'vendor' | 'type' | 'user' }> = ({ 
 export const QualityRework: React.FC = () => {
   return (
     <div className="mb-6">
-      <h2 className="text-lg font-semibold mb-4">Quality & Rework Intelligence</h2>
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-lg font-semibold">Quality & Rework Intelligence</h2>
+        <button className="text-sm text-primary hover:underline font-medium">
+          View All Issues →
+        </button>
+      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Left: Rework Trends Chart */}

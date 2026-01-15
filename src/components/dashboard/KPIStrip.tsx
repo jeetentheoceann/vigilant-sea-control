@@ -80,6 +80,12 @@ export const KPIStrip: React.FC = () => {
 
   return (
     <div className="mb-6">
+      <div className="flex items-center justify-between mb-3">
+        <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Key Metrics</h2>
+        <button className="text-sm text-primary hover:underline font-medium">
+          View All Metrics →
+        </button>
+      </div>
       <div className="flex gap-4 overflow-x-auto pb-2">
         {displayKPIs.map(kpi => (
           <KPICardComponent key={kpi.id} kpi={kpi} />

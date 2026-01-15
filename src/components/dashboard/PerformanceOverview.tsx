@@ -30,7 +30,12 @@ export const PerformanceOverview: React.FC = () => {
 
   return (
     <div className="mb-6">
-      <h2 className="text-lg font-semibold mb-4">Performance Overview</h2>
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-lg font-semibold">Performance Overview</h2>
+        <button className="text-sm text-primary hover:underline font-medium">
+          View All Reports →
+        </button>
+      </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Left: KPI Summary Cards */}
         <div className="space-y-4">

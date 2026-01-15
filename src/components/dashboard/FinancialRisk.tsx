@@ -60,7 +60,12 @@ const RiskFlagBadge: React.FC<{ flag: 'low' | 'medium' | 'high' | 'critical' }> 
 export const FinancialRisk: React.FC = () => {
   return (
     <div className="mb-6">
-      <h2 className="text-lg font-semibold mb-4">Financial Risk & Exposure</h2>
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-lg font-semibold">Financial Risk & Exposure</h2>
+        <button className="text-sm text-primary hover:underline font-medium">
+          View All Risks →
+        </button>
+      </div>
 
       {/* Risk Summary Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
@@ -95,7 +100,12 @@ export const FinancialRisk: React.FC = () => {
             <AlertTriangle className="w-4 h-4 text-warning" />
             <h3 className="text-sm font-semibold">High-Value Watchlist</h3>
           </div>
-          <span className="text-xs text-muted-foreground">Top 5 by exposure</span>
+          <div className="flex items-center gap-4">
+            <span className="text-xs text-muted-foreground">Top 5 by exposure</span>
+            <button className="text-sm text-primary hover:underline font-medium">
+              View All Invoices →
+            </button>
+          </div>
         </div>
 
         <div className="overflow-x-auto">

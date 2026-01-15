@@ -5,7 +5,12 @@ import { FileText, Clock, CheckCircle, AlertCircle } from 'lucide-react';
 export const AgentView: React.FC = () => {
   return (
     <div className="space-y-6">
-      <h2 className="text-lg font-semibold">My Invoice Summary</h2>
+      <div className="flex items-center justify-between">
+        <h2 className="text-lg font-semibold">My Invoice Summary</h2>
+        <button className="text-sm text-primary hover:underline font-medium">
+          View All My Invoices →
+        </button>
+      </div>
 
       {/* Agent KPIs */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -54,11 +59,14 @@ export const AgentView: React.FC = () => {
 
       {/* Rejection Reasons */}
       <div className="dashboard-card">
-        <div className="dashboard-card-header">
+        <div className="dashboard-card-header flex items-center justify-between">
           <div className="flex items-center gap-2">
             <AlertCircle className="w-4 h-4 text-critical" />
             <h3 className="text-sm font-semibold">Recent Rejection Reasons</h3>
           </div>
+          <button className="text-sm text-primary hover:underline font-medium">
+            View Details →
+          </button>
         </div>
         <div className="p-4 space-y-3">
           {agentData.rejectionReasons.map((reason, index) => (
